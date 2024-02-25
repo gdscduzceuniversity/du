@@ -1,3 +1,3 @@
-# Mango Kurulumu
+# Mongo Kurulumu
 
-# Mango Kullanımı
+# Mongo Kullanımı
