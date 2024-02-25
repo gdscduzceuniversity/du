@@ -1,3 +1,0 @@
-# Mango Kurulumu
-
-# Mango Kullanımı

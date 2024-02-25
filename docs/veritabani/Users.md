@@ -1,5 +1,5 @@
 # Users collection'u
-Bu tablo'da projede kullanıcıyla alakalı her türlü bilgiler yer alacaktır.
+Bu koleksiyonda projede kullanıcıyla alakalı her türlü bilgiler yer alacaktır.
 
 ## _id
 id alan'ı, tipi nesne numarası şeklinde mongo'nun bize ön tanımlı vermiş olduğu numaralandırma için otomatik olarak kullanılmaktadır.
@@ -13,7 +13,7 @@ bu alan string tipinde olup kullanıcının adını barındırır, bu alan deği
 # lastName
 bu alan string tipinde olup kullanıcının soyadını barındırır, bu alan değiştirilebilir.
 
-# password
+# pass
 bu alan string tipinde olup kullanıcının parolasının hash'ini tutar, bu alan değiştirilebilir.
 
 # slug
@@ -25,6 +25,12 @@ bu alan string tipinde olup kullanıcnın hakkında açıklaması yer alır bu a
 # iPath
 bu alan string tipinde olup resmin dosya sisteminde ki adresi verilmiştir.
 
-# status
-bu alan string tipinde olup kullanıcnın inaktif ya da aktif olduğu durumunun bilgisini içerir.
+# isActive
+bu alan bool tipinde olup kullanıcnın inaktif ya da aktif olduğu durumunun bilgisini içerir. 1: aktif, 0: inaktif
+
+# createdAt
+bu alan tarih tipinde olup kullanıcının oluşturulma tarihini barındırır.
+
+# communities
+bu alan array tipinde olup kullanıcının hangi topluluklara üye olduğunu barındırır.
 
