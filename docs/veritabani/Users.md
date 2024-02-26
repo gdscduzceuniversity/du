@@ -34,3 +34,7 @@ bu alan tarih tipinde olup kullanıcının oluşturulma tarihini barındırır.
 # communities
 bu alan array tipinde olup kullanıcının hangi topluluklara üye olduğunu barındırır.
 
+# isDeleted
+bu alan bool tipinde olup kullanıcının silinip silinmediğini barındırır. 1: silindi, 0: silinmedi
+```
+
