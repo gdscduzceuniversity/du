@@ -1,0 +1,53 @@
+@startuml
+left to right direction
+actor "Ziyaretçi Kullanıcı" as guest
+actor "Kullanıcı" as user
+actor "Topluluk Üyesi" as communityMember
+actor "Topluluk Yöneticileri" as communityAdmin
+actor "Admin" as admin
+rectangle "Üniversite Sosyal Medya Uygulaması" {
+  usecase "Topluluk Oluşturma" as UC1
+  usecase "Yönetim Ekibinin Seçilmesi" as UC2
+  usecase "Kategoriye Göre Listeleme" as UC3
+  usecase "Tüm Toplulukların Listelenmesi" as UC4
+  usecase "Gönderi Paylaşımı(Herkese Açık/Üyelere Özel)" as UC5
+  usecase "Beğeni Yapma" as UC6
+  usecase "İçerik Denetimi ve Onaylama" as UC7
+  usecase "Duyuru Paylaşımı" as UC8
+  usecase "Blog Post Paylaşımı" as UC9
+  usecase "Kullanıcı Rolleri ve İzinler" as UC10
+  usecase "Topluluğa Yönetici Ekleme ve Silme" as UC11
+  usecase "Üye Başvuru Döneminin Açılması" as UC12
+  usecase "Üye Başvuru Döneminin Kapatılması" as UC13
+  usecase "Üye Başvurusu Onaylama" as UC14
+  usecase "İçerik Ara" as UC15
+  usecase "Profil Düzenle" as UC16
+  usecase "Takip Etme/Silme" as UC17
+  usecase "Topluluk Profili Düzenleme" as UC18
+  usecase "Toplulukları Silme" as UC19
+  usecase "Gönderileri/Blog Postları Silme" as UC20
+  usecase "Kullanıcıları Engelleme" as UC21
+}
+
+communityAdmin -- UC2
+communityAdmin -- UC7
+communityAdmin -- UC8
+communityAdmin -- UC10
+communityAdmin -- UC11
+communityAdmin -- UC12
+communityAdmin -- UC13
+communityAdmin -- UC14
+communityAdmin -- UC18
+user -- UC1
+user -- UC6
+user -- UC16
+user -- UC17
+UC3 -- guest
+UC4 -- guest
+UC15 -- guest
+UC5 -- communityMember
+UC9 -- communityMember
+UC19 -- admin
+UC20 -- admin
+UC21 -- admin
+@enduml
