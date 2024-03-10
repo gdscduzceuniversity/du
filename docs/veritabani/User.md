@@ -13,7 +13,7 @@ bu alan string tipinde olup kullanıcının adını barındırır, bu alan deği
 # lastName
 bu alan string tipinde olup kullanıcının soyadını barındırır, bu alan değiştirilebilir.
 
-# pass
+# passHash
 bu alan string tipinde olup kullanıcının parolasının hash'ini tutar, bu alan değiştirilebilir.
 
 # slug
@@ -32,7 +32,7 @@ bu alan bool tipinde olup kullanıcnın inaktif ya da aktif olduğu durumunun bi
 bu alan tarih tipinde olup kullanıcının oluşturulma tarihini barındırır.
 
 # communities
-bu alan array tipinde olup kullanıcının hangi topluluklara üye olduğunu barındırır.
+bu alan array tipinde olup kullanıcının hangi topluluklara üye olduğunu id tipinde bir array olarak barındırır.
 
 # isDeleted
 bu alan bool tipinde olup kullanıcının silinip silinmediğini barındırır. 1: silindi, 0: silinmedi
