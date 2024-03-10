@@ -3,7 +3,7 @@ left to right direction
 actor "Ziyaretçi Kullanıcı" as guest
 actor "Kullanıcı" as user
 actor "Topluluk Üyesi" as communityMember
-actor "Topluluk Yöneticileri" as communityAdmin
+actor "Topluluk Yöneticileri" as communityCoreTeam
 actor "Admin" as admin
 rectangle "Üniversite Sosyal Medya Uygulaması" {
   usecase "Topluluk Oluşturma" as UC1
@@ -29,15 +29,15 @@ rectangle "Üniversite Sosyal Medya Uygulaması" {
   usecase "Kullanıcıları Engelleme" as UC21
 }
 
-communityAdmin -- UC2
-communityAdmin -- UC7
-communityAdmin -- UC8
-communityAdmin -- UC10
-communityAdmin -- UC11
-communityAdmin -- UC12
-communityAdmin -- UC13
-communityAdmin -- UC14
-communityAdmin -- UC18
+communityCoreTeam -- UC2
+communityCoreTeam -- UC7
+communityCoreTeam -- UC8
+communityCoreTeam -- UC10
+communityCoreTeam -- UC11
+communityCoreTeam -- UC12
+communityCoreTeam -- UC13
+communityCoreTeam -- UC14
+communityCoreTeam -- UC18
 user -- UC1
 user -- UC6
 user -- UC16
