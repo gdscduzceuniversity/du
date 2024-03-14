@@ -31,4 +31,4 @@ go.work
 **/.env
 
 # log files
-/app.log
+*.log
