@@ -22,11 +22,17 @@ bu alan string tipinde olup topluluk resminin dosya sisteminde ki adresi verilmi
 ## members
 bu alan array tipinde olup topluluğun üyelerinin id'lerini barındırır.
 
+## memberCount
+bu alan int tipinde olup topluluğun üye sayısını barındırır.
+
 ## categories
 bu alan int tipinde bir array olup topluluğun kategorilerini barındırır. Kategorilerin neler olduğu frontende tutulacaktır.
 
 ## posts
 bu alan array tipinde olup topluluğun postlarının id'lerini barındırır.
+
+## postsCount
+bu alan int tipinde olup topluluğun post sayısını barındırır.
 
 ## createdAt
 bu alan tarih tipinde olup topluluğun oluşturulma tarihini barındırır.

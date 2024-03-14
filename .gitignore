@@ -25,3 +25,10 @@ go.work
 
 # macOS
 **/.DS_Store
+
+# environment files
+/du.env
+**/.env
+
+# log files
+/app.log

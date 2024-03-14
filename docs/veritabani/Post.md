@@ -31,6 +31,9 @@ bu alan tarih tipinde olup postun oluşturulma tarihini barındırır.
 ## likes
 bu alan array tipinde olup postu beğenen kullanıcıların id'lerini barındırır.
 
+## likesCount
+bu alan int tipinde olup postu beğenen kullanıcı sayısını barındırır.
+
 ## comments
 bu alan array tipinde olup posta yapılan yorumların id'lerini barındırır.
 
