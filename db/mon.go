@@ -24,14 +24,14 @@ func Setup() {
 	// if you want to use .env file, you can create a .env file to root of the project and add the connection string
 	// etc. MONGODB_URI=mongodb://localhost:27017
 	if err := godotenv.Load("du.env"); err != nil {
-		logger.Sugar.Info("No .env file found")
+		logger.Logger().Info("No .env file found")
 	}
 	// if you want to use the environment variable, you can set the environment variable
 	// in your terminal
 	// etc. export MONGODB_URI=mongodb://localhost:27017
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {
-		logger.Sugar.Fatal("You must set your 'MONGO_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
+		logger.Logger().Fatal("You must set your 'MONGO_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
 	}
 	var err error
 	// Create a new Client and connect to the server
@@ -44,7 +44,7 @@ func Setup() {
 	if err = Client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
 		panic(err)
 	}
-	logger.Sugar.Info("Pinged your deployment. You successfully connected to MongoDB!")
+	logger.Logger().Info("Pinged your deployment. You successfully connected to MongoDB!")
 
 	getCollections()
 }
@@ -63,5 +63,5 @@ func Disconnect() {
 	if err := Client.Disconnect(context.TODO()); err != nil {
 		panic(err)
 	}
-	logger.Sugar.Info("Connection to MongoDB closed.")
+	logger.Logger().Info("Connection to MongoDB closed.")
 }

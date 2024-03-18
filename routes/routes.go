@@ -1,10 +1,11 @@
 package routes
 
 import (
-	"fmt"
 	"github.com/gdscduzceuniversity/du.git/logger"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"net/http"
 	"time"
 )
 
@@ -20,7 +21,7 @@ func SetupRouter() *gin.Engine {
 	router := gin.New()
 	router.SetTrustedProxies(nil)
 	// Custom logger middleware to log all requests to the console and the file with zap logger
-	router.Use(ginLogger(logger.Sugar))
+	router.Use(zapLoggerMiddleware())
 	router.Use(gin.Recovery())
 
 	// for swagger api documentation group
@@ -35,6 +36,7 @@ func SetupRouter() *gin.Engine {
 			c.JSON(200, gin.H{
 				"message": "pong",
 			})
+			logger.Logger().Info("pong")
 		})
 		// Auth Routes
 		//v1.POST("/register", handlers.Register)
@@ -46,51 +48,44 @@ func SetupRouter() *gin.Engine {
 	return router
 }
 
-// ginLogger returns a gin.HandlerFunc (middleware) that logs requests using uber-go/zap.
-func ginLogger(sugarLogger *zap.SugaredLogger) gin.HandlerFunc {
+// zapLoggerMiddleware creates a middleware function specific to gin.
+// This function logs every HTTP request.
+func zapLoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Record the start time of the request
-		start := time.Now()
-		path := c.Request.URL.Path
-		query := c.Request.URL.RawQuery
+		// save the start time
+		startTime := time.Now()
 
-		// Process request
+		// Process the request
 		c.Next()
 
-		// Processing end time and elapsed time
-		latency := time.Since(start)
+		// calculate the latency
+		latency := time.Since(startTime)
 
-		clientIP := c.ClientIP()
-		method := c.Request.Method
-		statusCode := c.Writer.Status()
-		comment := c.Errors.ByType(gin.ErrorTypePrivate).String()
+		// determine the log level
+		level := levelByStatusCode(c.Writer.Status())
 
-		// Generate the log message format
-		logMessage := fmt.Sprintf("%s %s - \"%s %s%s %d %s \"%s\" %s",
-			clientIP,
-			method,
-			path,
-			query,
-			statusCode,
-			latency,
-			c.Request.UserAgent(),
-			comment,
+		// log the request
+		logger.Logger().Log(level, "incoming request",
+			zap.String("method", c.Request.Method),
+			zap.String("path", c.Request.URL.Path),
+			zap.Int("status", c.Writer.Status()),
+			zap.String("ip", c.ClientIP()),
+			zap.String("user-agent", c.Request.UserAgent()),
+			zap.Duration("latency", latency),
 		)
-
-		// Log the request with the log level based on the status code
-		logByStatusCode(statusCode, sugarLogger, logMessage)
 	}
 }
 
-// Set log level according to HTTP status code
-func logByStatusCode(statusCode int, sugarLogger *zap.SugaredLogger, logMessage string) {
-	// Set log level according to HTTP status code
+// levelByStatusCode returns the log level based on the status code.
+func levelByStatusCode(statusCode int) zapcore.Level {
+	var logLevel zapcore.Level
 	switch {
-	case statusCode >= 400 && statusCode <= 599:
-		// Log at Error level for 4xx errors
-		sugarLogger.Errorf(logMessage)
+	case statusCode >= http.StatusInternalServerError:
+		logLevel = zapcore.ErrorLevel
+	case statusCode >= http.StatusBadRequest:
+		logLevel = zapcore.WarnLevel
 	default:
-		// Log at Info level for all other cases
-		sugarLogger.Infof(logMessage)
+		logLevel = zapcore.InfoLevel
 	}
+	return logLevel
 }

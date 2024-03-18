@@ -3,66 +3,51 @@ package logger
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"os"
 )
 
 const logFile = "app.log"
+const timeFormat string = "2006-01-02T15:04:05.999Z"
 
-var Sugar *zap.SugaredLogger
+var zapLogger, _ = newLogger(zap.InfoLevel)
 
-func InitLogger() {
+func Logger() *zap.Logger {
+	return zapLogger
+}
 
-	// Setting the logging level.
-	logLevel := zap.InfoLevel
-
-	// Encoder configuration for both console and file.
-	// This configuration specifies how logs should be formatted and encoded.
+func newLogger(level zapcore.Level) (*zap.Logger, error) {
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
 		NameKey:        "logger",
-		CallerKey:      "caller",
-		MessageKey:     "msg",
+		CallerKey:      "sourceLocation",
+		FunctionKey:    zapcore.OmitKey,
+		MessageKey:     "message",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalLevelEncoder, // Encode the level in Capital Case.
-		EncodeTime:     zapcore.ISO8601TimeEncoder,  // Encode time in ISO8601 format.
-		EncodeDuration: zapcore.StringDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder, // Include file name and line number.
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeTime:     zapcore.TimeEncoderOfLayout(timeFormat),
+		EncodeDuration: zapcore.SecondsDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
-
-	// Creating a console encoder with the above configuration for human-readable output.
-	consoleEncoder := zapcore.NewConsoleEncoder(encoderConfig)
-
-	// Creating a file encoder; also using the console encoder for text format.
-	// You can use a JSON encoder here if you prefer JSON format in files.
-	fileEncoder := zapcore.NewConsoleEncoder(encoderConfig)
-
-	// Core for console output, filtering logs according to the log level.
-	consoleCore := zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), logLevel)
-
-	// Core for file logging, using the file encoder.
-	// Opens or creates the file for appending logs.
-	file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		panic(err) // Handling errors opening or creating the log file.
+	config := zap.Config{
+		Level:       zap.NewAtomicLevelAt(level),
+		Development: false,
+		Sampling: &zap.SamplingConfig{
+			Initial:    100,
+			Thereafter: 100,
+		},
+		Encoding:         "json",
+		EncoderConfig:    encoderConfig,
+		OutputPaths:      []string{"stdout", logFile},
+		ErrorOutputPaths: []string{"stderr", logFile},
 	}
-	fileCore := zapcore.NewCore(fileEncoder, zapcore.AddSync(file), logLevel)
-
-	// Combining both cores to log both to console and file with the same log level.
-	core := zapcore.NewTee(consoleCore, fileCore)
-
-	// Creating the logger with the combined core and adding caller information (file and line number).
-	logger := zap.New(core, zap.AddCaller())
-
-	// Assigning the sugared logger to the global variable.
-	// The sugared logger offers a more flexible API for logging.
-	Sugar = logger.Sugar()
+	return config.Build(zap.AddStacktrace(zap.FatalLevel))
 }
 
 // example usage
-//		sugar.Debug("this is a debug message") 	// Information useful to developers during debugging.
-//		sugar.Info("this is an info message") 	// Confirms that the application is working the way it is supposed to.
-//		sugar.Warn("this is a warn message") 	// Indicates a problem that can disturb the application in the future.
-//		sugar.Error("this is an error message") // An issue causing malfunctioning of one or more features.
-//		sugar.Fatal("this is a fatal message") 	// a serious issue that prevents the program from working.
+//		logger.Logger().Debug("this is a debug message") 	// Information useful to developers during debugging.
+//		logger.Logger().Info("this is an info message") 	// Confirms that the application is working the way it is supposed to.
+//		logger.Logger().Warn("this is a warn message") 	// Indicates a problem that can disturb the application in the future.
+//		logger.Logger().Error("this is an error message") // An issue causing malfunctioning of one or more features.
+//		logger.Logger().Fatal("this is a fatal message") 	// a serious issue that prevents the program from working.
+//		logger.Logger().Panic("this is a panic message") // a critical issue that forces the program to stop.
