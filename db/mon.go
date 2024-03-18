@@ -31,7 +31,7 @@ func Setup() {
 	// etc. export MONGODB_URI=mongodb://localhost:27017
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {
-		logger.Sugar.Fatal("You must set your 'MONGODB_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
+		logger.Sugar.Fatal("You must set your 'MONGO_URI' environment variable. See\n\t https://www.mongodb.com/docs/drivers/go/current/usage-examples/#environment-variable")
 	}
 	var err error
 	// Create a new Client and connect to the server
