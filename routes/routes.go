@@ -2,11 +2,8 @@ package routes
 
 import (
 	"github.com/gdscduzceuniversity/du.git/logger"
+	"github.com/gdscduzceuniversity/du.git/middlewares"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"net/http"
-	"time"
 )
 
 const port = ":8080"
@@ -21,7 +18,7 @@ func SetupRouter() *gin.Engine {
 	router := gin.New()
 	router.SetTrustedProxies(nil)
 	// Custom logger middleware to log all requests to the console and the file with zap logger
-	router.Use(zapLoggerMiddleware())
+	router.Use(middlewares.ZapLoggerMiddleware())
 	router.Use(gin.Recovery())
 
 	// for swagger api documentation group
@@ -46,46 +43,4 @@ func SetupRouter() *gin.Engine {
 	}
 
 	return router
-}
-
-// zapLoggerMiddleware creates a middleware function specific to gin.
-// This function logs every HTTP request.
-func zapLoggerMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// save the start time
-		startTime := time.Now()
-
-		// Process the request
-		c.Next()
-
-		// calculate the latency
-		latency := time.Since(startTime)
-
-		// determine the log level
-		level := levelByStatusCode(c.Writer.Status())
-
-		// log the request
-		logger.Logger().Log(level, "incoming request",
-			zap.String("method", c.Request.Method),
-			zap.String("path", c.Request.URL.Path),
-			zap.Int("status", c.Writer.Status()),
-			zap.String("ip", c.ClientIP()),
-			zap.String("user-agent", c.Request.UserAgent()),
-			zap.Duration("latency", latency),
-		)
-	}
-}
-
-// levelByStatusCode returns the log level based on the status code.
-func levelByStatusCode(statusCode int) zapcore.Level {
-	var logLevel zapcore.Level
-	switch {
-	case statusCode >= http.StatusInternalServerError:
-		logLevel = zapcore.ErrorLevel
-	case statusCode >= http.StatusBadRequest:
-		logLevel = zapcore.WarnLevel
-	default:
-		logLevel = zapcore.InfoLevel
-	}
-	return logLevel
 }
