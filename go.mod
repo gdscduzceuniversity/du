@@ -1,6 +1,6 @@
 module github.com/gdscduzceuniversity/du.git
 
-go 1.22.1
+go 1.21
 
 require (
 	github.com/gin-gonic/gin v1.9.1
