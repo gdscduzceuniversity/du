@@ -2,16 +2,29 @@ package db
 
 import (
 	"context"
+	"fmt"
+	"os"
+
 	"github.com/gdscduzceuniversity/du.git/logger"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"os"
+)
+
+const (
+	// databseName is the name of the database
+	database = "du"
+	// userCollection is the name of the collection that stores the user data
+	user = "user"
+	// communityCollection is the name of the collection that stores the community data
+	community = "community"
+	// postCollection is the name of the collection that stores the post data
+	communityContent = "communityContent"
 )
 
 var (
-	databseName         = "du"
+	db                  *mongo.Database
 	Client              *mongo.Client
 	UserCollection      *mongo.Collection
 	CommunityCollection *mongo.Collection
@@ -46,16 +59,34 @@ func Setup() {
 	}
 	logger.Logger().Info("Pinged your deployment. You successfully connected to MongoDB!")
 
+	getDatabase()
+	// Create collections
+	createCollections(user, community, communityContent)
 	getCollections()
+}
+
+// getDatabase from the client and assign it to the variable
+func getDatabase() {
+	db = Client.Database(database)
+	if db == nil {
+		logger.Logger().Fatal("failed to get database")
+	}
+}
+
+// createCollections in the database
+func createCollections(collections ...string) {
+	for _, collection := range collections {
+		if err := db.CreateCollection(context.TODO(), collection); err != nil {
+			logger.Logger().Fatal(fmt.Sprintf("Error creating collection %s, %v:", collection, err))
+		}
+	}
 }
 
 // getCollections from the database and assign them to the variables
 func getCollections() {
-	database := Client.Database(databseName)
-
-	UserCollection = database.Collection("user")
-	CommunityCollection = database.Collection("community")
-	PostCollection = database.Collection("post")
+	UserCollection = db.Collection(user)
+	CommunityCollection = db.Collection(community)
+	PostCollection = db.Collection(community)
 }
 
 // Disconnect from the server when the application exits

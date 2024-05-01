@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type Post struct {
+type CommunityContent struct {
 	ID         string    `bson:"_id,omitempty" json:"id"`
 	Type       int8      `bson:"type" json:"type"` // 0: Announcement, 1:Post
 	Author     string    `bson:"author" json:"author"`
