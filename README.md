@@ -18,7 +18,19 @@ git clone https://github.com/gdscduzceuniversity/du.git
 go get
 ```
 
-3. Rename the `example.env` file to `du.env` and fill in the required fields.
+3. Run the mongo container
+
+```bash
+docker run -d -p 27017:27017 --name mongodb mongo
+```
+
+### environment variables
+
+```bash
+export MONGO_URI=mongodb://localhost:27017
+```
+
+or rename the `example.env` file to `du.env` and just edit the file with connection url.
 
 ### Usage
 ```sh
